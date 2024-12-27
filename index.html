@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
+  </head>
+  <body>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <main>
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-asterisk"><path d="M12 6v12"></path><path d="M17.196 9 6.804 15"></path><path d="m6.804 9 10.392 6"></path></svg>
+    <h1>Recipe Finder APP</h1>
+    </div>
+    <div class="search-container">
+      <input type="text" id="searchInput" placeholder="Search for recipes">
+      <button id="searchButton">Search</button>
+    </div>
+    <div class="recipes" id="recipesContainer"></div>
+  </main>
+  <script>
+    const API_URL = 'https://www.themealdb.com/api/json/v1/1/search.php';
+
+document.getElementById('searchButton').addEventListener('click', () => {
+    const query = document.getElementById('searchInput').value;
+    fetchRecipes(query);
+});
+
+async function fetchRecipes(query) {
+    const recipesContainer = document.getElementById('recipesContainer');
+    recipesContainer.innerHTML = 'Loading...';
+
+    try {
+        const response = await fetch(`${API_URL}?s=${query}`);
+        const data = await response.json();
+
+        recipesContainer.innerHTML = ''; // Limpiar el contenedor
+        if (data.meals) {
+            data.meals.forEach(meal => {
+                const recipeCard = document.createElement('div');
+                recipeCard.className = 'recipe';
+                recipeCard.innerHTML = `
+                    <img src="${meal.strMealThumb}" alt="${meal.strMeal}">
+                    <div class="recipe-content">
+                        <h3>${meal.strMeal}</h3>
+                        <a href="${meal.strSource || '#'}" target="_blank">View Recipe</a>
+                    </div>
+                `;
+                recipesContainer.appendChild(recipeCard);
+            });
+        } else {
+            recipesContainer.innerHTML = 'No recipes found.';
+        }
+    } catch (error) {
+        recipesContainer.innerHTML = 'An error occurred while fetching recipes.';
+        console.error(error);
+    }
+}
+  </script>
+</body>
+</html>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
